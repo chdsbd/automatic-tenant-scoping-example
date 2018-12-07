@@ -8,7 +8,7 @@ class Tenant(models.Model):
     """Simple model to restrict projects"""
 
 
-class ProjectManager(models.Manager):
+class TenantManager(models.Manager):
     """Manager that automatically filters Projects to the current tenant"""
 
     def get_queryset(self):
@@ -22,11 +22,25 @@ class ProjectManager(models.Manager):
         return super().get_queryset().filter(tenant=rv)
 
 
-class Project(models.Model):
+class TenantModelMixin(models.Model):
+    """
+    Provide tenant-based automatic scoping of models
+
+    example:
+        Project.objects.all()
+        # returns only projects for the current tenant
+        Project.tenant_unconstrained_unsafe().all()
+        # returns all projects
+    """
+    class Meta:
+        abstract = True
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
+    objects = TenantManager()
+    tenant_unconstrained_unsafe = models.Manager()
+
+
+class Project(TenantModelMixin, models.Model):
     """Model associated with individual tenants"""
 
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
-    objects = ProjectManager()
-    tenant_unconstrained_unsafe = models.Manager()
