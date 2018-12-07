@@ -7,8 +7,10 @@ log = getLogger(__name__)
 class Tenant(models.Model):
     """Simple model to restrict projects"""
 
+
 class MissingTenantException(RuntimeError):
-     """Tenant is required to access `.objects` of tenant restricted model"""
+    """Tenant is required to access `.objects` of tenant restricted model"""
+
 
 class TenantManager(models.Manager):
     """Manager that automatically filters Projects to the current tenant"""
@@ -33,8 +35,10 @@ class TenantModelMixin(models.Model):
         Project.tenant_unconstrained_unsafe().all()
         # returns all projects
     """
+
     class Meta:
         abstract = True
+
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     # unconstrained manager must come first for it to be default
     tenant_unconstrained_unsafe = models.Manager()

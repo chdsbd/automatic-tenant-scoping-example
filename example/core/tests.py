@@ -25,8 +25,12 @@ class ProjectModelTests(TestCase):
             3,
             "unconstrained queries should return everything",
         )
-    
+
     def test_missing_tenant(self):
+        """
+        a tenant is required to call `.objects`.
+        `.tenant_unconstrained_unsafe` can be used instead, if appropriate.
+        """
         State.current_tenant = None
         with self.assertRaises(MissingTenantException):
             Project.objects.all()
