@@ -1,7 +1,4 @@
 from django.db import models
-from logging import getLogger
-
-log = getLogger(__name__)
 
 
 class Tenant(models.Model):
